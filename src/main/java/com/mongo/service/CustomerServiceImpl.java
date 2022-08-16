@@ -27,16 +27,23 @@ public class CustomerServiceImpl implements CustomerService {
         return customerRepository.findAll();
     }
     
-    public Customer getByName(String name) {
-        LOGGER.info("----- MONGO PROVIDER : FINDING CUSTOMER BY NAME: {} -----", name);
+    public List<Customer> getByName(String name) {
+        LOGGER.info("----- MONGO : FINDING CUSTOMER BY NAME: {} -----", name);
         
         Query query = new Query();
         query.addCriteria(Criteria.where("name").is(name));
-        Customer customer = (Customer) mongoTemplate.find(query, Customer.class);
+        List<Customer> customers = (List<Customer>) mongoTemplate.find(query, Customer.class);
         
-        LOGGER.info("----- MONGO PROVIDER : CUSTOMER: {} -----", customer.toString());
+        return customers;
+    }
+
+    @Override
+    public Customer save(Customer customer) {
+        LOGGER.info("----- MONGO : SAVING CUSTOMER {} -----", customer);
         
-        return customer;
+        Customer customerDB = mongoTemplate.save(customer);
+        
+        return customerDB;
     }
 
 }
