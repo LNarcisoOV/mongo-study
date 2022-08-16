@@ -10,6 +10,7 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 import com.mongo.model.Customer;
 import com.mongo.repository.CustomerRepository;
+import com.mongodb.client.result.DeleteResult;
 
 @Service
 public class CustomerServiceImpl implements CustomerService {
@@ -44,6 +45,17 @@ public class CustomerServiceImpl implements CustomerService {
         Customer customerDB = mongoTemplate.save(customer);
         
         return customerDB;
+    }
+    
+    @Override
+    public long deleteByName(String name) {
+        LOGGER.info("----- MONGO : DELETE CUSTOMERS BY NAME: {} -----", name);
+        
+        Query query = new Query();
+        query.addCriteria(Criteria.where("name").is(name));
+        DeleteResult result = mongoTemplate.remove(query, Customer.class);
+        
+        return result.getDeletedCount();
     }
 
 }
